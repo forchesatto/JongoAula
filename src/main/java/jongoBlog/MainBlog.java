@@ -19,8 +19,6 @@ public class MainBlog {
 		
 		Jongo jongo = new Jongo(db);
 
-		
-
 		MongoCollection collectionBlog = jongo.getCollection("Blog");
 		
 		Blog blogzinho = new Blog();
@@ -32,27 +30,30 @@ public class MainBlog {
 		postTeste.setTexto("Primeiro Post");
 		postTeste.setTitulo("Primeiro post VAMO INTER");
 		
+		blogzinho.addPost(postTeste);
+		
 		Comentario comentario1 = new Comentario();
 		comentario1.setAutor("GREMIO");
 		comentario1.setComentario("GREMIO EH MELHOR");
 		comentario1.setData(LocalDate.now());
 		
-		List<Comentario> coments = new ArrayList();
-		coments.add(comentario1);
-		postTeste.setComentarios(coments);
-		
-		List<Post> posts = new ArrayList();
-		posts.add(postTeste);
-		
-		blogzinho.setPosts(posts);
+		postTeste.addComentario(comentario1);
 		
 		collectionBlog.insert(blogzinho);
-		
 		
 		MongoCursor<Blog> cursorBlog = collectionBlog.find().as(Blog.class);
 		
 		cursorBlog.forEach(c->{
 			System.out.println("BLOG:"+c.getDominio());
+			
+			c.getPosts().forEach(p->{
+				System.out.println("post:"+p.getTexto()+" - "+p.getData());
+				
+				p.getComentarios().forEach(com->{
+					System.out.println("coment:"+com.getComentario());
+					
+				});
+			});
 		});
 		
 
